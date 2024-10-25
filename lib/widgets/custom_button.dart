@@ -7,7 +7,7 @@ class CustomButton extends StatelessWidget {
   final VoidCallback onPressed;
  final Color color;
  final String text;
- final Icon icon;
+ final Widget icon;
  final double width;
  final double height;
   const CustomButton({
