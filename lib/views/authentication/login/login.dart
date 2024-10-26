@@ -5,6 +5,7 @@ import 'package:task_management/widgets/custom_textfield.dart';
 
 import '../../../data/constants/app_colors.dart';
 import '../../../provider/auth_provider.dart';
+import '../../../routes/routes.dart';
 import '../../../utils/snackbar.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
@@ -35,6 +36,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         // Show success snackbar
         showLoginSuccessSnackbar(context);
         print('User signed in: ${user.email}');
+        Navigator.pushNamed(context, AppRoutes.mainDashboard);
       } else {
         // Show error snackbar
         showLoginFailureSnackbar(context);

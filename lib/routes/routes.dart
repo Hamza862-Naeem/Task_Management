@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../views/authentication/login/login.dart';
 import '../views/authentication/login/main_screen.dart';
 import '../views/authentication/registration/registration_screen.dart';
+import '../views/dashboard/main_dashboard_screen.dart';
 
 // Centralized routes class
 class AppRoutes {
@@ -23,8 +24,8 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const SignUpScreen());
       case main:
         return MaterialPageRoute(builder: (_) => const MainScreen());
-      // case mainDashboard:
-      //   return MaterialPageRoute(builder: (_) => const MainDashboard());
+       case mainDashboard:
+         return MaterialPageRoute(builder: (_) =>  MainDashboardScreen());
       // case activity:
       //   return MaterialPageRoute(builder: (_) => const ActivityScreen());
       default:

@@ -18,13 +18,13 @@ void showLoginSuccessSnackbar(BuildContext context) {
 }
 
 void showLoginFailureSnackbar(BuildContext context) {
-  showSnackbar(context, 'Failed to login: Account does not exist.');
+  showSnackbar(context, 'Failed to login: Account does not exist.', isError: true);
 }
 
 void showRegistrationSuccessSnackbar(BuildContext context) {
   showSnackbar(context, 'Registration successful!');
 }
 
-void showRegistrationFailureSnackbar(BuildContext context) {
-  showSnackbar(context, 'Failed to register: Please try again.');
+void showRegistrationFailureSnackbar(BuildContext context, ) {
+  showSnackbar(context,'Failed to login  :This email has already has account', isError: true); // Use the general snackbar function
 }

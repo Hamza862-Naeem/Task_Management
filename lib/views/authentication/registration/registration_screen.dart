@@ -1,26 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:task_management/routes/routes.dart';
+import 'package:task_management/utils/snackbar.dart';
 import 'package:task_management/widgets/custom_button.dart';
 import 'package:task_management/widgets/custom_textfield.dart';
 
 import '../../../data/constants/app_colors.dart';
 import '../../../provider/auth_provider.dart';
 
-class SignUpScreen extends ConsumerWidget {
+class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen({super.key});
-
+  
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final authService = ref.read(firebaseAuthServiceProvider);
+  ConsumerState<SignUpScreen> createState() => _SignUpScreenState();}
+  
+  class _SignUpScreenState  extends ConsumerState<SignUpScreen>{
+      final TextEditingController nameController = TextEditingController();
     final TextEditingController emailController = TextEditingController();
     final TextEditingController passwordController = TextEditingController();
     final TextEditingController phoneController = TextEditingController();
     final TextEditingController cityController = TextEditingController();
-    final TextEditingController nameController = TextEditingController();
 
-    void signUp() async {
+    @override
+  void dispose() {
+    // Dispose controllers to free resources
+    nameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    phoneController.dispose();
+    cityController.dispose();
+    super.dispose();
+  }
+     
+      void signUp() async {
+         final authService = ref.read(firebaseAuthServiceProvider);
       final user = await authService.signUpWithEmail(
+
         emailController.text.trim(),
         passwordController.text.trim(),
         phoneController.text.trim(), // Include phone number
@@ -28,13 +44,25 @@ class SignUpScreen extends ConsumerWidget {
         nameController.text.trim(),
       );
       if (user != null) {
-        // Navigate to the next screen on successful signup
+        showRegistrationSuccessSnackbar(context);
         print('User signed up: ${user.email}');
+        Navigator.pushNamed(context,  AppRoutes.login );
+        
       } else {
-        // Show error message
+        showRegistrationFailureSnackbar(context );
         print('Failed to sign up');
       }
     }
+  
+  
+
+  @override
+  Widget build(BuildContext context) {
+   
+   
+   
+
+  
 
     return Scaffold(
       appBar: AppBar(
@@ -62,11 +90,8 @@ class SignUpScreen extends ConsumerWidget {
                     controller: nameController, // Added phone controller
                     hintText: 'Full Name',
                     icon: Icons.account_circle,
-                    keyboardType: TextInputType.text,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
-                      LengthLimitingTextInputFormatter(11), // Phone number limit
-                    ],
+                   
+                    
                   ),
                    const SizedBox(height: 20),
                   RoundedTextFormField(
@@ -108,8 +133,9 @@ class SignUpScreen extends ConsumerWidget {
                     color: AppColors.darkBlueColor,
                     text: "Sign Up",
                     icon: const Icon(Icons.login),
-                    width: 250,
+                    width: 200,
                     height: 50,
+                    
                   ),
                 ],
               ),
