@@ -56,7 +56,7 @@ class AppColors {
       case 'teal':
         return tealColor;
       default:
-        return blackColor; // Default to black if color name not found
+        return blackColor; 
     }
   }
 }
