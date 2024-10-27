@@ -1,23 +1,27 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:task_management/provider/task_data_provider.dart';
+import 'package:task_management/widgets/custom_container.dart';
 import 'package:task_management/widgets/custom_textfield.dart';
 import '../../data/constants/app_colors.dart';
 
-class MainDashboardScreen extends StatefulWidget {
+
+class MainDashboardScreen extends ConsumerStatefulWidget {
   MainDashboardScreen({super.key});
 
   @override
-  State<MainDashboardScreen> createState() => _MainDashboardScreenState();
+  ConsumerState<MainDashboardScreen> createState() => _MainDashboardScreenState();
 }
 
-class _MainDashboardScreenState extends State<MainDashboardScreen> {
+class _MainDashboardScreenState extends ConsumerState<MainDashboardScreen> {
   final String userName = 'Hamza';
   final TextEditingController searchController = TextEditingController();
   late Timer _timer;
   DateTime _currentTime = DateTime.now(); // Initialize current time
-   @override
+  
+  @override
   void initState() {
     super.initState();
     // Start a timer to update the current time every second
@@ -27,19 +31,22 @@ class _MainDashboardScreenState extends State<MainDashboardScreen> {
       });
     });
   }
+   
+
 
   @override
   void dispose() {
     _timer.cancel(); // Cancel the timer when disposing the widget
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
-     // Format the current day name and date
+    // Format the current day name and date
     String dayName = DateFormat.EEEE('en_US').format(_currentTime); // Full day name
     String date = DateFormat.d().format(_currentTime); // Day of the month
+     final taskCards =ref.watch(taskCardsProvider);
     return Scaffold(
-      
       drawer: SafeArea(
         child: Drawer(
           // You can add items in the drawer here
@@ -56,6 +63,7 @@ class _MainDashboardScreenState extends State<MainDashboardScreen> {
           ),
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start, // Align items to the start (left side)
           children: [
             Container(
               padding: const EdgeInsets.only(top: 40, left: 20, right: 20), // Add padding to the container
@@ -70,7 +78,7 @@ class _MainDashboardScreenState extends State<MainDashboardScreen> {
                     },
                   ),
                   // Center Text
-                   Expanded(
+                  Expanded(
                     child: Center(
                       child: RichText(
                         text: TextSpan(
@@ -94,21 +102,69 @@ class _MainDashboardScreenState extends State<MainDashboardScreen> {
                     radius: 30,
                     backgroundColor: AppColors.greenColor,
                   ),
-           
                 ],
               ),
-              
-              
             ),
-            
             Padding(
               padding: const EdgeInsets.only(left: 40, right: 40, top: 30),
-              child: RoundedTextFormField(hintText: 'search', controller:searchController, icon: Icons.search,),
-            )  , 
-            SizedBox(height: 20,), 
-                    // Add more UI elements below as needed
-                    Text('Tasks',style: TextStyle(color: AppColors.lightGreyColor),)
-          ],
+              child: RoundedTextFormField(
+                hintText: 'search',
+                controller: searchController,
+                icon: Icons.search,
+              ),
+            ),
+            const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.only(left: 40), // Align Progress text and container to the left
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Progress',
+                    style: TextStyle(color: AppColors.lightGreyColor, fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 10),
+                  Container(
+                    height: 200,
+                    child: 
+                  ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                  
+                    itemCount: taskCards.length,
+                    itemBuilder: (context, index){
+                      final task = taskCards[index];
+                      
+                      return Padding(padding: EdgeInsets.only(bottom: 20, right: 20),
+                      child: InkWell(
+                        onTap: () {
+                          
+                        },
+                        child: CustomContainer(
+                          progress: task.progress,
+                             startDate:task.startDate,
+                            taskText: task.taskText,
+                             daysLeft: task.daysLeft,
+                              avatarUrl: task.avatarUrl,
+                              color: task.color,
+                             ),
+                      ));
+
+                    }
+                    ))
+                 
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 40, top:20 ),
+              child: Text('Tasks',style: TextStyle(
+                color: AppColors.lightGreyColor,
+                fontSize: 18,
+               fontWeight: FontWeight.bold)
+                       ),
+            ) ,
+            
+            ],
         ),
       ),
     );
