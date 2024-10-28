@@ -6,6 +6,7 @@ import 'package:task_management/provider/task_data_provider.dart';
 import 'package:task_management/widgets/custom_container.dart';
 import 'package:task_management/widgets/custom_textfield.dart';
 import '../../data/constants/app_colors.dart';
+import '../../widgets/add_task_dialog.dart';
 
 
 class MainDashboardScreen extends ConsumerStatefulWidget {
@@ -38,6 +39,15 @@ class _MainDashboardScreenState extends ConsumerState<MainDashboardScreen> {
   void dispose() {
     _timer.cancel(); // Cancel the timer when disposing the widget
     super.dispose();
+  }
+  // Add the _openAddTaskDialog method within the MainDashboardScreenState
+  void _openAddTaskDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AddTaskDialog();
+      },
+    );
   }
 
   @override
@@ -163,10 +173,38 @@ class _MainDashboardScreenState extends ConsumerState<MainDashboardScreen> {
                fontWeight: FontWeight.bold)
                        ),
             ) ,
+            const SizedBox(height: 10),
+Expanded(
+  child: Consumer(
+    builder: (context, ref, child) {
+      final tasks = ref.watch(tasksProvider);
+      return ListView.builder(
+        itemCount: tasks.length,
+        itemBuilder: (context, index) {
+          final task = tasks[index];
+          return ListTile(
+            title: Text(task.title, style: TextStyle(color: AppColors.lightGreyColor)),
+            subtitle: Text(task.description, style: TextStyle(color: AppColors.lightGreyColor)),
+            trailing: Text(DateFormat.yMMMd().format(task.startDate),style: TextStyle(color: AppColors.lightGreyColor),),
+          );
+        },
+      );
+    },
+  ),
+),
             
             ],
+            
+        )
+        
         ),
+         floatingActionButton: FloatingActionButton(
+        onPressed: () => _openAddTaskDialog(context),
+        backgroundColor: AppColors.blueColor,
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
-  }
-}
+
+  }}
+
+  
