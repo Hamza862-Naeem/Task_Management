@@ -19,7 +19,7 @@ class FirebaseAuthService {
     }
   }
 
-  // Updated signUpWithEmail to include name
+  
   Future<User?> signUpWithEmail(String email, String password, String phone, String city, String name) async {
     try {
       UserCredential result = await _auth.createUserWithEmailAndPassword(

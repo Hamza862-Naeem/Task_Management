@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'card_model.dart'; // Import the TaskCardModel
+import 'card_model.dart';
+import 'task_model.dart'; // Import the TaskCardModel
 
 // Function to get colors based on progress
 List<Color> getGradientColors(double progress) {
@@ -41,66 +42,66 @@ List<Color> getGradientColors(double progress) {
 }
 
 // Updated TaskCardModel list
-final List<TaskCardModel> taskCards = [
-  TaskCardModel(
+final List<Task> taskCards = [
+  Task(
     progress: 0.9,
-    startDate: '12 June 2024',
+    startDate: DateTime.now(),
     taskText: 'Web Design',
     daysLeft: 2,
     avatarUrl: '',
     color: getGradientColors(0.9), // Use actual progress value
   ),
-  TaskCardModel(
+  Task(
     progress: 0.6,
-    startDate: '15 May 2024',
+    startDate: DateTime.now(),
     taskText: 'App Development',
     daysLeft: 5,
     avatarUrl: '',
     color: getGradientColors(0.6), // Use actual progress value
   ),
-  TaskCardModel(
+  Task(
     progress: 0.3,
-    startDate: '22 June 2024',
+    startDate: DateTime.now(),
     taskText: 'Bike Design',
     daysLeft: 2,
     avatarUrl: '',
     color: getGradientColors(0.3), // Use actual progress value
   ),
-  TaskCardModel(
+  Task(
     progress: 0.4,
-    startDate: '19 May 2024',
+    startDate: DateTime.now(),
     taskText: 'Car Development',
     daysLeft: 5,
     avatarUrl: '',
     color: getGradientColors(0.4), // Use actual progress value
   ),
-  TaskCardModel(
+  Task(
     progress: 0.5,
-    startDate: '22 June 2024',
+    startDate: DateTime.now(),
     taskText: 'House Design',
     daysLeft: 2,
     avatarUrl: '',
     color: getGradientColors(0.5), // Use actual progress value
   ),
-  TaskCardModel(
+  Task(
     progress: 0.2,
-    startDate: '19 May 2024',
+    startDate: DateTime.now(),
     taskText: 'Bus Development',
     daysLeft: 5,
     avatarUrl: '',
     color: getGradientColors(0.2), // Use actual progress value
   ),
-  TaskCardModel(
+  Task(
     progress: 0.1,
-    startDate: '22 June 2024',
+    startDate: DateTime.now(),
     taskText: 'Cardio',
     daysLeft: 2,
     avatarUrl: '',
     color: getGradientColors(0.1), // Use actual progress value
   ),
-  TaskCardModel(
+  Task(
     progress: 0.8,
-    startDate: '19 May 2024',
+    startDate: DateTime.now(),
     taskText: 'Charity',
     daysLeft: 5,
     avatarUrl: '',
