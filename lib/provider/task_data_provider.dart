@@ -11,10 +11,9 @@ final taskCardsProvider = Provider<List<Task>>((ref) {
 });
 
 final tasksProvider = StateNotifierProvider<TaskNotifier, List<Task>>((ref) => TaskNotifier());
-final progressTasksProvider = Provider<List<Task>>((ref) {
-  final tasks = ref.watch(tasksProvider);
-  return tasks.where((task) => task.status == TaskStatus.inProgress).toList(); // Filter for in-progress tasks
-});
+
+// to move task to next screen in this case its is activity 
+
 
 
 class TaskNotifier extends StateNotifier<List<Task>> {

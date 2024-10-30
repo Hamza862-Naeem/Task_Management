@@ -5,6 +5,7 @@ import '../views/authentication/login/login.dart';
 import '../views/authentication/login/main_screen.dart';
 import '../views/authentication/registration/registration_screen.dart';
 import '../views/dashboard/main_dashboard_screen.dart';
+import '../views/dashboard/progress_activity.dart';
 
 // Centralized routes class
 class AppRoutes {
@@ -26,8 +27,8 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const MainScreen());
        case mainDashboard:
          return MaterialPageRoute(builder: (_) =>  MainDashboardScreen());
-      // case activity:
-      //   return MaterialPageRoute(builder: (_) => const ActivityScreen());
+       case activity:
+         return MaterialPageRoute(builder: (_) => const ActivityScreen());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

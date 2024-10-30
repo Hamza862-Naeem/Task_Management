@@ -3,23 +3,23 @@ import 'package:flutter/material.dart';
 class CustomContainer extends StatelessWidget {
   final double height;
   final double width;
-  final double progress; // Progress value from 0 to 1
-  final String startDate; // Start date for the task
-  final String taskText; // Description or title of the task
-  final int daysLeft; // Number of days left for the task
-  final String avatarUrl; // URL of the avatar image
-  final List<Color> color;
+  final double? progress; // Progress value from 0 to 1
+  final String? startDate; // Start date for the task
+  final String? taskText; // Description or title of the task
+  final int? daysLeft; // Number of days left for the task
+  final String? avatarUrl; // URL of the avatar image
+  final List<Color>? color;
 
   const CustomContainer({
     super.key,
     this.height = 220,
     this.width = 150,
-    required this.progress,
-    required this.startDate,
-    required this.taskText,
-    required this.daysLeft,
-    required this.avatarUrl,
-    required this.color,
+     this.progress,
+     this.startDate,
+     this.taskText,
+     this.daysLeft,
+     this.avatarUrl,
+     this.color,
   });
 
   @override
@@ -30,7 +30,7 @@ class CustomContainer extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
         gradient:  LinearGradient(
-          colors: color,
+          colors: color!,
           // colors: [
           //   Color.fromRGBO(50, 88, 149, 1.0),
           //   Color.fromRGBO(47, 73, 142, 1.0),
@@ -79,7 +79,7 @@ class CustomContainer extends StatelessWidget {
             top: 8,
             left: 8,
             child: Text(
-              startDate,
+              startDate!,
               style: const TextStyle(color: Colors.white70, fontSize: 12),
             ),
           ),
@@ -87,7 +87,7 @@ class CustomContainer extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                taskText,
+                taskText!,
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 16,
@@ -134,7 +134,7 @@ class CustomContainer extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Text(
-                '${(progress * 100).toStringAsFixed(0)}%',
+                '${(progress! * 100).toStringAsFixed(0)}%',
                 style: const TextStyle(
                     color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
               ),
@@ -153,7 +153,7 @@ class CustomContainer extends StatelessWidget {
             left: 8,
             child: CircleAvatar(
               radius: 12,
-              backgroundImage: NetworkImage(avatarUrl),
+              backgroundImage: NetworkImage(avatarUrl!),
             ),
           ),
         ],

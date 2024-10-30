@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:task_management/provider/task_data_provider.dart';
+import 'package:task_management/views/dashboard/progress_activity.dart';
 import 'package:task_management/widgets/custom_container.dart';
 import 'package:task_management/widgets/custom_textfield.dart';
 import '../../data/constants/app_colors.dart';
 import '../../enums/status_enum.dart';
+import '../../provider/activity_state_notifier.dart';
 import '../../widgets/add_task_dialog.dart';
 
 class MainDashboardScreen extends ConsumerStatefulWidget {
@@ -53,8 +55,12 @@ class _MainDashboardScreenState extends ConsumerState<MainDashboardScreen> {
     // Format the current day name and date
     String dayName = DateFormat.EEEE('en_US').format(_currentTime); // Full day name
     String date = DateFormat.d().format(_currentTime); // Day of the month
-    final taskCards = ref.watch(taskCardsProvider); // Get task cards
-    final tasks = ref.watch(tasksProvider); // Get tasks
+    
+    // Get tasks from the provider
+    
+    final taskList = ref.watch(tasksProvider);
+    final pendingTasks = taskList.where((task) => task.status == TaskStatus.pending).toList();
+    final inProgressTasks = taskList.where((task) => task.status == TaskStatus.inProgress).toList();
 
     return Scaffold(
       drawer: SafeArea(
@@ -121,6 +127,8 @@ class _MainDashboardScreenState extends ConsumerState<MainDashboardScreen> {
               ),
             ),
             const SizedBox(height: 20),
+            
+            // Progress Section
             Padding(
               padding: const EdgeInsets.only(left: 40),
               child: Column(
@@ -135,24 +143,31 @@ class _MainDashboardScreenState extends ConsumerState<MainDashboardScreen> {
                     height: 200,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      itemCount: taskCards.length,
+                      itemCount: inProgressTasks.length,
                       itemBuilder: (context, index) {
-                        final task = taskCards[index];
+                        final task = inProgressTasks[index];
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 20, right: 20),
-                          child: InkWell(
-                            onTap: () {
-                              // Handle tap if needed
-                            },
-                           child: CustomContainer(
-  progress: task.progress ?? 0.0, // Provide a default value of 0.0 if null
-  startDate: DateFormat('yyyy-MM-dd').format(task.startDate ?? DateTime.now()), // Format the date to string
-  taskText: task.taskText ?? 'No task description', // Default string if taskText is null
-  daysLeft: task.daysLeft ?? 0, // Default value of 0 if null
-  avatarUrl: task.avatarUrl ?? '', // Default string if avatarUrl is null
-  color: task.color ?? [Colors.blue], // Default color list if null
-),
+                          child: GestureDetector(
+                            // In the onTap method of the GestureDetector
+onTap: () {
+  // Update the selectedTaskProvider state with a null check
+  final selectedTaskNotifier = ref.read(selectedTaskProvider.notifier);
+  selectedTaskNotifier.state = task; // This line assumes you have a StateNotifierProvider for selectedTaskProvider
+  Navigator.push(context, MaterialPageRoute(
+    builder: (BuildContext) => const ActivityScreen(),
+  ));
+},
 
+                            child: CustomContainer(
+                              progress: task.progress ?? 0.0,
+                              startDate: DateFormat('yyyy-MM-dd').format(task.startDate ?? DateTime.now()),
+                              
+                              taskText: task.title?? "",
+                              daysLeft: task.daysLeft ?? 0,
+                              avatarUrl: task.avatarUrl ?? '',
+                              color: task.color ?? [Colors.blue, Colors.red],
+                            ),
                           ),
                         );
                       },
@@ -161,6 +176,8 @@ class _MainDashboardScreenState extends ConsumerState<MainDashboardScreen> {
                 ],
               ),
             ),
+
+            // Tasks Section
             Padding(
               padding: const EdgeInsets.only(left: 40, top: 20),
               child: Text(
@@ -169,33 +186,62 @@ class _MainDashboardScreenState extends ConsumerState<MainDashboardScreen> {
               ),
             ),
             const SizedBox(height: 10),
-            Expanded(
-              child: ListView.builder(
-                itemCount: tasks.length,
-                itemBuilder: (context, index) {
-                  final task = tasks[index];
-                  return ListTile(
-                    title: Text(task.title ?? 'Untitled', style: TextStyle(color: AppColors.lightGreyColor)),
-                    subtitle: Text(task.description ?? 'No description', style: TextStyle(color: AppColors.lightGreyColor)),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(DateFormat.yMMMd().format(task.startDate ?? DateTime.now())),
-                        IconButton(
-                          onPressed: () {
-                            ref.read(tasksProvider.notifier).toggleProgressStatus(index);
-                          },
-                          icon: Icon(
-                            task.status == TaskStatus.pending ? Icons.play_circle : Icons.check_circle,
-                            color: task.status == TaskStatus.inProgress ? Colors.green : Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
+           Expanded(
+  child: ListView.builder(
+    itemCount: pendingTasks.length,
+    itemBuilder: (context, index) {
+      final task = pendingTasks[index];
+      return ListTile(
+        title: Text(
+          task.title ?? 'Untitled',
+          style: TextStyle(color: AppColors.lightGreyColor),
+        ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              task.description ?? 'No description',
+              style: TextStyle(color: AppColors.lightGreyColor),
+            ),
+            // Add taskText and daysLeft here
+            if (task.taskText != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 4.0),
+                child: Text(
+                  'Task: ${task.taskText}',
+                  style: TextStyle(color: AppColors.lightGreyColor),
+                ),
+              ),
+            if (task.daysLeft != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 4.0),
+                child: Text(
+                  'Days Left: ${task.daysLeft} days',
+                  style: TextStyle(color: AppColors.lightGreyColor),
+                ),
+              ),
+          ],
+        ),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(DateFormat.yMMMd().format(task.startDate ?? DateTime.now())),
+            IconButton(
+              onPressed: () {
+                ref.read(tasksProvider.notifier).toggleProgressStatus(index);
+              },
+              icon: Icon(
+                task.status == TaskStatus.pending ? Icons.play_circle : Icons.check_circle,
+                color: task.status == TaskStatus.inProgress ? Colors.green : Colors.grey,
               ),
             ),
+          ],
+        ),
+      );
+    },
+  ),
+)
+
           ],
         ),
       ),
