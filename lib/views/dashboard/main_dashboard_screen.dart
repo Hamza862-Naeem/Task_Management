@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -10,6 +11,7 @@ import '../../data/constants/app_colors.dart';
 import '../../data/constants/progress_color.dart';
 import '../../enums/status_enum.dart';
 import '../../provider/activity_state_notifier.dart';
+import '../../services/firebase_task_service.dart';
 import '../../widgets/add_task_dialog.dart';
 
 class MainDashboardScreen extends ConsumerStatefulWidget {
@@ -42,31 +44,35 @@ class _MainDashboardScreenState extends ConsumerState<MainDashboardScreen> {
     super.dispose();
   }
 
-  void _openAddTaskDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AddTaskDialog();
-      },
-    );
-  }
+ void _openAddTaskDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AddTaskDialog(
+        onTaskAdded: (task) async {
+          // Get the current user's ID
+          final userId = FirebaseAuth.instance.currentUser?.uid;
+          if (userId != null) {
+            final firestoreService = FirestoreService();
+            await firestoreService.addTask(task, userId);
+          }
+        },
+      );
+    },
+  );
+}
 
   @override
   Widget build(BuildContext context) {
     // Format the current day name and date
     String dayName = DateFormat.EEEE('en_US').format(_currentTime); // Full day name
     String date = DateFormat.d().format(_currentTime); // Day of the month
-    
-    // Get tasks from the provider
-    
     final taskList = ref.watch(tasksProvider);
     final pendingTasks = taskList.where((task) => task.status == TaskStatus.pending).toList();
     final inProgressTasks = taskList.where((task) => task.status == TaskStatus.inProgress).toList();
-
     return Scaffold(
       drawer: SafeArea(
         child: Drawer(
-          // You can add items in the drawer here
         ),
       ),
       body: Container(
@@ -151,19 +157,18 @@ class _MainDashboardScreenState extends ConsumerState<MainDashboardScreen> {
                           padding: const EdgeInsets.only(bottom: 20, right: 20),
                           child: GestureDetector(
                             // In the onTap method of the GestureDetector
-onTap: () {
-  // Update the selectedTaskProvider state with a null check
-  final selectedTaskNotifier = ref.read(selectedTaskProvider.notifier);
-  selectedTaskNotifier.state = task; // This line assumes you have a StateNotifierProvider for selectedTaskProvider
-  Navigator.push(context, MaterialPageRoute(
-    builder: (BuildContext) => const ActivityScreen(),
-  ));
-},
+                                      onTap: () {
+                        // Update the selectedTaskProvider state with a null check
+                       final selectedTaskNotifier = ref.read(selectedTaskProvider.notifier);
+                      selectedTaskNotifier.state = task; // This line assumes you have a StateNotifierProvider for selectedTaskProvider
+                      Navigator.push(context, MaterialPageRoute(
+                      builder: (BuildContext) => const ActivityScreen(),
+                                   ));
+                                        },
 
                             child: CustomContainer(
                               progress: task.progress ?? 0.0,
                               startDate: DateFormat('yyyy-MM-dd').format(task.startDate ?? DateTime.now()),
-                              
                               taskText: task.title?? "",
                               daysLeft: task.daysLeft ?? 0,
                               avatarUrl: task.avatarUrl ?? '',
@@ -233,24 +238,8 @@ onTap: () {
               },
               icon: Icon(
                 task.status == TaskStatus.pending ? Icons.play_circle : Icons.check_circle,
-                color: task.status == TaskStatus.inProgress ? Colors.green : Colors.grey,
-              ),
-            ),
-          ],
-        ),
-      );
-    },
-  ),
-)
-
-          ],
-        ),
-      ),
+                color: task.status == TaskStatus.inProgress ? Colors.green : Colors.grey,),),],),);},),)],),),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _openAddTaskDialog(context),
         backgroundColor: AppColors.blueColor,
-        child: const Icon(Icons.add, color: Colors.white),
-      ),
-    );
-  }
-}
+        child: const Icon(Icons.add, color: Colors.white), ),);  }}

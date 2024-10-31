@@ -1,17 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../models/task_model.dart';
-import '../provider/task_data_provider.dart';
-import '../enums/status_enum.dart'; // Ensure you import your TaskStatus enum
 
-class AddTaskDialog extends ConsumerWidget {
+import '../enums/status_enum.dart';
+import '../models/task_model.dart';
+import '../provider/auth_provider.dart';
+import '../provider/task_data_provider.dart';
+
+class AddTaskDialog extends ConsumerStatefulWidget {
+  final Function(Task) onTaskAdded; // Callback for task addition
+
+  AddTaskDialog({Key? key, required this.onTaskAdded}) : super(key: key);
+
+  @override
+  ConsumerState<AddTaskDialog> createState() => _AddTaskDialogState();
+}
+
+class _AddTaskDialogState extends ConsumerState<AddTaskDialog> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController taskTextController = TextEditingController();
   final TextEditingController daysLeftController = TextEditingController();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text('Add Task'),
       content: Column(
@@ -26,7 +37,6 @@ class AddTaskDialog extends ConsumerWidget {
             controller: descriptionController,
             decoration: const InputDecoration(labelText: 'Task Description'),
             maxLines: 1,
-
           ),
           TextField(
             controller: taskTextController,
@@ -36,7 +46,7 @@ class AddTaskDialog extends ConsumerWidget {
           TextField(
             controller: daysLeftController,
             decoration: const InputDecoration(labelText: 'Enter the Duration (in days)'),
-            keyboardType: TextInputType.number, // Ensure it's numeric input
+            keyboardType: TextInputType.number,
             maxLines: 1,
           ),
         ],
@@ -58,7 +68,7 @@ class AddTaskDialog extends ConsumerWidget {
     );
   }
 
-  void _submitTask(WidgetRef ref, BuildContext context) {
+  void _submitTask(WidgetRef ref, BuildContext context) async {
     // Validate the input fields
     if (titleController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -88,8 +98,36 @@ class AddTaskDialog extends ConsumerWidget {
 
     print('Creating task: ${newTask.title}, ${newTask.description}');
 
+    // Get the user ID (handle AsyncValue)
+    final userAsync = ref.watch(authStateProvider);
+    String userId = userAsync.when(
+      data: (user) => user?.uid ?? '', // Extract the UID if user exists
+      loading: () {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Loading user...')),
+        );
+        return '';
+      },
+      error: (err, stack) {
+        // Handle error state (log it, show message, etc.)
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error fetching user: $err')),
+        );
+        return '';
+      },
+    );
+
+    // Check if userId is empty
+    if (userId.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('User not found. Task cannot be added.')),
+      );
+      return;
+    }
+
     // Use the notifier to add the new task
-    ref.read(tasksProvider.notifier).addTask(newTask);
+    await ref.read(tasksProvider.notifier).addTask(newTask, userId); // Pass userId to the addTask method
+
     Navigator.of(context).pop(); // Close the dialog after adding the task
 
     // Clear the text fields
