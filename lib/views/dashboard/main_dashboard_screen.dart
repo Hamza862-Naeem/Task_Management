@@ -7,6 +7,7 @@ import 'package:task_management/views/dashboard/progress_activity.dart';
 import 'package:task_management/widgets/custom_container.dart';
 import 'package:task_management/widgets/custom_textfield.dart';
 import '../../data/constants/app_colors.dart';
+import '../../data/constants/progress_color.dart';
 import '../../enums/status_enum.dart';
 import '../../provider/activity_state_notifier.dart';
 import '../../widgets/add_task_dialog.dart';
@@ -166,7 +167,7 @@ onTap: () {
                               taskText: task.title?? "",
                               daysLeft: task.daysLeft ?? 0,
                               avatarUrl: task.avatarUrl ?? '',
-                              color: task.color ?? [Colors.blue, Colors.red],
+                              color: getProgressColor(task.progress ?? 0.0),
                             ),
                           ),
                         );
