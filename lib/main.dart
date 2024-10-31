@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
       title: 'Task Management App',
       
       // Provide initial route or main screen directly
-      initialRoute: AppRoutes.mainDashboard,
+      initialRoute: AppRoutes.main,
       
       // Define your route generation function here
       onGenerateRoute: AppRoutes.generateRoute,
