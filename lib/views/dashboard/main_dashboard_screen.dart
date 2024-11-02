@@ -28,16 +28,23 @@ class _MainDashboardScreenState extends ConsumerState<MainDashboardScreen> {
   DateTime _currentTime = DateTime.now(); // Initialize current time
   
   @override
-  void initState() {
-    super.initState();
-    // Start a timer to update the current time every second
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-        _currentTime = DateTime.now(); // Update the current time
-      });
-    });
+void initState() {
+  super.initState();
+
+  final userId = FirebaseAuth.instance.currentUser?.uid;
+  if (userId != null) {
+    // Fetch inProgress tasks for this user on screen load
+    ref.read(tasksProvider.notifier).fetchInProgressTasks(userId);
   }
-   
+
+  // Timer to update the current time
+  _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    setState(() {
+      _currentTime = DateTime.now();
+    });
+  });
+}
+
   @override
   void dispose() {
     _timer.cancel(); // Cancel the timer when disposing the widget

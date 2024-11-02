@@ -31,15 +31,6 @@ class CustomContainer extends StatelessWidget {
       decoration: BoxDecoration(
         gradient:  LinearGradient(
           colors: color!,
-          // colors: [
-          //   Color.fromRGBO(50, 88, 149, 1.0),
-          //   Color.fromRGBO(47, 73, 142, 1.0),
-          //   Color.fromRGBO(43, 59, 188, 1.0),
-          //   Color.fromRGBO(45, 65, 144, 1.0),
-          //   Color.fromRGBO(48, 74, 133, 1.0),
-          //   Color.fromRGBO(50, 82, 142, 1.0),
-          //   Color.fromRGBO(44, 63, 121, 1.0),
-          // ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),

@@ -56,14 +56,7 @@ class ActivityScreen extends ConsumerWidget {
                       color: Colors.white, // Adjust color for better readability
                     ),
                   ),
-                  const SizedBox(height: 10),
-                  Text(
-                    'Task Progress: ${task.progress?.toStringAsFixed(0)}%',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.white, // Adjust color for better readability
-                    ),
-                  ),
+                  
                 ] 
               ],
             ),
