@@ -16,7 +16,7 @@ class AppRoutes {
   static const String mainDashboard = '/mainDashboard';
   static const String activity = '/activity';
 
-  // Route generation method (use this in MaterialApp)
+  
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case login:

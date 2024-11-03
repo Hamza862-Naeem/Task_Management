@@ -70,10 +70,10 @@ class MainScreen extends ConsumerWidget {
                     height: 20.0,
                   ),
             
-                  // Buttons at the bottom
+                  
                   Padding(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 20.0), // Optional: add padding around buttons
+                        horizontal: 20.0), 
                     child: Column(
                       children: [
                         CustomButton(
