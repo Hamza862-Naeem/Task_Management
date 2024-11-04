@@ -91,4 +91,20 @@ class Task {
       'color': color?.map((c) => c.value).toList(),
     };
   }
+
+  // Convert Task instance to JSON (for serialization)
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id, // Include id when converting to JSON (optional)
+      'title': title,
+      'description': description,
+      'startDate': startDate?.toIso8601String(), // Convert DateTime to String
+      'status': status?.toString(),
+      'progress': progress,
+      'taskText': taskText,
+      'daysLeft': daysLeft,
+      'avatarUrl': avatarUrl,
+      'color': color?.map((c) => c.value).toList(),
+    };
+  }
 }
