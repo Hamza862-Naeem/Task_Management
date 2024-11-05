@@ -239,7 +239,7 @@ void initState() {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(DateFormat.yMMMd().format(task.startDate ?? DateTime.now())),
-            IconButton(
+            IconButton( 
               onPressed: () {
                 ref.read(tasksProvider.notifier).toggleProgressStatus(index);
               },

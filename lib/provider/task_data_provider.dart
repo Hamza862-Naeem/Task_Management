@@ -45,7 +45,7 @@ Future<void> fetchInProgressTasks(String userId) async {
 
   Future<void> deleteTask(String taskId, String userId) async {
     await _firestoreService.deleteTask(taskId, userId);
-    // Remove the task from local state after deleting it from Firestore
+    
     state = state.where((task) => task.id != taskId).toList();
   }
 
